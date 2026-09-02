@@ -15,12 +15,34 @@
 */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "header/Argorithm_Cal.h"
 
-int main(void){
+int main(int argc, char *argv[]){
 
-	long long a = Pollard_s_Rho(15); //phần kiểm tra, chưa thêm gì cao siêu vào
+	if(strcmp(argv[1], "--mode") == 0){ /*lỗi chí mạng từng phạm vào ngày 2/9/2026
+										  đi lấy argv[1] == "--mode" (thực chất chúng
+										  chỉ so sánh hai địa chỉ phải bằng nhau) 
+										  theo GDB đã debug, thì cái này lỗi vì nó
+										  đi cmp hai cái chuỗi y hệt nhau là '--mode'
+										  nhưng vấn đề một cái là ở stack đi so sánh
+										  với vaddr chương trình
+										*/
+		if(strcmp(argv[2], "p") == 0){
+			long long b = atoll(argv[3]); //atoi thường trả int, atoll trả long long
+			long long r_gcd;
+			long long a = Pollard_s_Rho(b,&r_gcd); /* note : cái quỷ r_gcd là dạng transmit
+													  values gcd trong thuật toán ra ngoài, 
+													  ta truyền địa chỉ vào trong đó và từ 
+													  đó nó giải tham chiếu ra và truyền lại đây
+													*/
+			printf("[Cal] %lld = %lld x %lld\n",b,a,r_gcd);
+		}
+	}else{
+		printf("test");
+	}
 	//printf("gcd test= %lld\n",gcd(2379,4654));
-	printf("%lld\n",a);
+
 	return 0;
 }
