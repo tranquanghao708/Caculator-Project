@@ -19,8 +19,8 @@
 
 int main(void){
 
-	long long a = Pollard_s_Rho(9223372036854775808); //phần kiểm tra, chưa thêm gì cao siêu vào
-
+	long long a = Pollard_s_Rho(15); //phần kiểm tra, chưa thêm gì cao siêu vào
+	//printf("gcd test= %lld\n",gcd(2379,4654));
 	printf("%lld\n",a);
 	return 0;
 }
