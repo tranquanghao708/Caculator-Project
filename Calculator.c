@@ -19,7 +19,18 @@
 #include <string.h>
 #include "header/Argorithm_Cal.h"
 
+void help(){
+	printf("HELP:\n\t--mode :"
+		   "\n\tp : Pollard_s_RHO Algorithm\n"
+			);
+}
+
 int main(int argc, char *argv[]){
+
+	if(argv[1] == NULL){
+		printf("[ERR] Please transmit or using many modes in the program\n");
+	return 1;
+	}
 
 	if(strcmp(argv[1], "--mode") == 0){ /*lỗi chí mạng từng phạm vào ngày 2/9/2026
 										  đi lấy argv[1] == "--mode" (thực chất chúng
@@ -40,7 +51,9 @@ int main(int argc, char *argv[]){
 			printf("[Cal] %lld = %lld x %lld\n",b,a,r_gcd);
 		}
 	}else{
-		printf("test");
+		printf("\nAlgrument invalid\n");
+		help();
+		return -1;
 	}
 	//printf("gcd test= %lld\n",gcd(2379,4654));
 
