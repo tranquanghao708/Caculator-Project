@@ -18,11 +18,35 @@
 #include <stdlib.h>
 #include <string.h>
 #include "header/Argorithm_Cal.h"
+#include <pthread.h>
 
 void help(){
 	printf("HELP:\n\t--mode :"
 		   "\n\tp : Pollard_s_RHO Algorithm\n"
 			);
+}
+
+//lam viec da luong
+
+typedef struct rho{
+	unsigned long long b;
+	unsigned long long r_gcd;
+	unsigned long long a;
+} rho_t;
+
+void *work_RHO(void *arg){
+
+	rho_t *rho = arg;
+			rho->b = 9083793275; //atoll(argv[3]); //atoi thường trả int, atoll trả long long
+
+			rho->a = Pollard_s_Rho(rho->b,&rho->r_gcd); /* note : cái r_gcd là dạng transmit
+													  values gcd trong thuật toán ra ngoài, 
+													  ta truyền địa chỉ vào trong đó và từ 
+													  đó nó giải tham chiếu ra và truyền lại đây
+													*/
+	printf("[Cal] %lld = %lld x %lld\n",rho->b,rho->a,rho->r_gcd);
+
+	return NULL;
 }
 
 int main(int argc, char *argv[]){
@@ -41,14 +65,18 @@ int main(int argc, char *argv[]){
 										  với vaddr chương trình
 										*/
 		if(strcmp(argv[2], "p") == 0){
-			long long b = atoll(argv[3]); //atoi thường trả int, atoll trả long long
-			long long r_gcd;
-			long long a = Pollard_s_Rho(b,&r_gcd); /* note : cái quỷ r_gcd là dạng transmit
-													  values gcd trong thuật toán ra ngoài, 
-													  ta truyền địa chỉ vào trong đó và từ 
-													  đó nó giải tham chiếu ra và truyền lại đây
-													*/
-			printf("[Cal] %lld = %lld x %lld\n",b,a,r_gcd);
+			pthread_t threads[4];
+			rho_t rho_p[4];
+
+			for (int i = 0; i < 4; i++) {
+   				 pthread_create(&threads[i], NULL, work_RHO, &rho_p[i]);
+			}
+			
+			for (int i = 0; i < 4; i++) {
+   				 pthread_join(threads[i], NULL);
+			}
+			// Ý tưởng: thêm tính năng rainbow attack, nghĩa là khi nó tính xong một cái số gì đó thì nó sẽ vừa in ra và vừa ghi vào một file ghi trong thư mục, khi lần thử tính tiếp theo cái đầu tiên nó sẽ duyệt vào bảng tra xem có tồn tại ko, nếu có thì in ra luôn còn nếu ko thì nó sẽ thực hiện tính toán và ghi các kết quả mới vào bảng
+
 		}
 	}else{
 		printf("\nAlgrument invalid\n");
